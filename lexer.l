@@ -1,7 +1,12 @@
-%option noyywrap
 %{
     #include "classes.h"
+
+    int linea = 1;
 %}
+
+%option noyywrap
+
+%x CADENA
 
 int_type    (uint8|uint16|int8|int16|int32byte)
 float_type  (float32|float64|complex64)
@@ -13,70 +18,97 @@ digit   [0-9]
 id_init [a-zA-Z_]
 id      {id_init}({id_init}|{digit})*
 
-int           {digit}([_]?{digit})*
+int           (0(_0)*|[1-9]([_]?{digit})*)
 simple_float  ({int}\.{int}?|\.{int})
-exp_end       [Ee][+-]?{int}
+exp_end       [Ee][+-]?([0-9]([_]?{digit})*)
 exp           ({digit}|{digit}\.{int}?|\.{int}){exp_end}
 
 float   ({exp}|{simple_float})
-complex {int|float}i
+complex ({int}|{float})i
 
-sl_string ".*"
-ml_string `[^`]`
-string    (sl_string|ml_string)
+ml_string `[^`]*`
+
+espacio [ ]
 
 %%
 
-if        {fprintf(yyout, "%d", IF);}
-else      {fprintf(yyout, "%d", ELSE);}
-break     {fprintf(yyout, "%d", BREAK);}
-switch    {fprintf(yyout, "%d", SWITCH);}
-case      {fprintf(yyout, "%d", CASE);}
-default   {fprintf(yyout, "%d", DEFAULT);}
-continue  {fprintf(yyout, "%d", CONTINUE);}
-var       {fprintf(yyout, "%d", VAR);}
-const     {fprintf(yyout, "%d", CONST);}
-defer     {fprintf(yyout, "%d", DEFER);}
-package   {fprintf(yyout, "%d", PACKAGE);}
-func      {fprintf(yyout, "%d", FUNC);}
-return    {fprintf(yyout, "%d", RETURN);}
-struct    {fprintf(yyout, "%d", STRUCT);}
-for       {fprintf(yyout, "%d", FOR);}
+\" {BEGIN(CADENA);}
+<CADENA>\" {
+  fprintf(yyout, "#%d#", STRING);
+  BEGIN(INITIAL);
+}
+<CADENA>\n {
+  printf("Error: Salto de linea no válido. Linea: %d\n", linea);
+  yyterminate();
+}
+<CADENA><<EOF>> {
+  printf("Error: Cadena sin cerrar. Linea: %d\n", linea);
+  yyterminate();
+}
+<CADENA>\\(.) {}
+<CADENA>. {}
 
-"++"  {fprintf(yyout, "%d", INC);}
-"--"  {fprintf(yyout, "%d", DEC);}
-"+"   {fprintf(yyout, "%d", PLUS);}
-"-"   {fprintf(yyout, "%d", MINUS);}
-"!"   {fprintf(yyout, "%d", NEG);}
-"*"   {fprintf(yyout, "%d", STAR);}
-"&"   {fprintf(yyout, "%d", AMP);}
-"."   {fprintf(yyout, "%d", DOT);}
-"/"   {fprintf(yyout, "%d", DIAG);}
-"%"   {fprintf(yyout, "%d", REM);}
-"="   {fprintf(yyout, "%d", ASSIG);}
+if        {fprintf(yyout, "#%d#", IF);}
+else      {fprintf(yyout, "#%d#", ELSE);}
+break     {fprintf(yyout, "#%d#", BREAK);}
+switch    {fprintf(yyout, "#%d#", SWITCH);}
+case      {fprintf(yyout, "#%d#", CASE);}
+default   {fprintf(yyout, "#%d#", DEFAULT);}
+continue  {fprintf(yyout, "#%d#", CONTINUE);}
+var       {fprintf(yyout, "#%d#", VAR);}
+const     {fprintf(yyout, "#%d#", CONST);}
+defer     {fprintf(yyout, "#%d#", DEFER);}
+package   {fprintf(yyout, "#%d#", PACKAGE);}
+func      {fprintf(yyout, "#%d#", FUNC);}
+return    {fprintf(yyout, "#%d#", RETURN);}
+struct    {fprintf(yyout, "#%d#", STRUCT);}
+for       {fprintf(yyout, "#%d#", FOR);}
 
-"=="  {fprintf(yyout, "%d", EQ);}
-"!="  {fprintf(yyout, "%d", NEQ);}
-"<="  {fprintf(yyout, "%d", LEQ);}
-">="  {fprintf(yyout, "%d", GEQ);}
-"<"   {fprintf(yyout, "%d", LE);}
-">"   {fprintf(yyout, "%d", GE);}
+"++"  {fprintf(yyout, "#%d#", INC);}
+"--"  {fprintf(yyout, "#%d#", DEC);}
+"+"   {fprintf(yyout, "#%d#", PLUS);}
+"-"   {fprintf(yyout, "#%d#", MINUS);}
+"!"   {fprintf(yyout, "#%d#", NEG);}
+"*"   {fprintf(yyout, "#%d#", STAR);}
+"&"   {fprintf(yyout, "#%d#", AMP);}
+"."   {fprintf(yyout, "#%d#", DOT);}
+"/"   {fprintf(yyout, "#%d#", DIAG);}
+"%"   {fprintf(yyout, "#%d#", REM);}
+"="   {fprintf(yyout, "#%d#", ASSIG);}
 
-"(" {fprintf(yyout, "%d", LPAR);}
-")" {fprintf(yyout, "%d", RPAR);}
-"[" {fprintf(yyout, "%d", LBRA);}
-"]" {fprintf(yyout, "%d", RBRA);}
-";" {fprintf(yyout, "%d", SC);}
-":" {fprintf(yyout, "%d", DDOT);}
-"," {fprintf(yyout, "%d", COMMA);}
+"=="  {fprintf(yyout, "#%d#", EQ);}
+"!="  {fprintf(yyout, "#%d#", NEQ);}
+"<="  {fprintf(yyout, "#%d#", LEQ);}
+">="  {fprintf(yyout, "#%d#", GEQ);}
+"<"   {fprintf(yyout, "#%d#", LE);}
+">"   {fprintf(yyout, "#%d#", GE);}
 
-{type}    {fprintf(yyout, "%d", TYPE);}
-{bool}    {fprintf(yyout, "%d", BOOL);}
-{complex} {fprintf(yyout, "%d", IM);}
-{float}   {fprintf(yyout, "%d", FLOAT);}
-{int}     {fprintf(yyout, "%d", INT);}
-{string}  {fprintf(yyout, "%d", STRING);}
-{id}      {fprintf(yyout, "%d", ID);}
+"(" {fprintf(yyout, "#%d#", LPAR);}
+")" {fprintf(yyout, "#%d#", RPAR);}
+"[" {fprintf(yyout, "#%d#", LBRA);}
+"]" {fprintf(yyout, "#%d#", RBRA);}
+";" {fprintf(yyout, "#%d#", SC);}
+":" {fprintf(yyout, "#%d#", DDOT);}
+"," {fprintf(yyout, "#%d#", COMMA);}
+
+{type}    {fprintf(yyout, "#%d#", TYPE);}
+{bool}    {fprintf(yyout, "#%d#", BOOL);}
+{float}   {fprintf(yyout, "#%d#", FLOAT);}
+{int}     {fprintf(yyout, "#%d#", INT);}
+{complex} {fprintf(yyout, "#%d#", IM);}
+{ml_string}  {fprintf(yyout, "#%d#", STRING);}
+{id}      {fprintf(yyout, "#%d#", ID);}
+
+[ ]+ { fprintf(yyout, "%s", yytext); }
+. {
+  printf("Error: %s Linea: %d\n", yytext, linea);
+  yyterminate();
+}
+
+\n  {
+  linea++;
+  fprintf(yyout, "\n");
+}
 
 %%
 
