@@ -9,46 +9,46 @@
 /* Operators */
 #define PLUS 6 /* +  */
 #define MINUS 7 /* - */
-#define INC 8 /* ++ */
-#define DEC 9 /* -- */
-#define NEG 10 /* ! */
-#define STAR 11 /* * */
-#define AMP 12 /* & */
-#define DOT 13 /* . selector*/
+#define NEG 8 /* ! */
+#define STAR 8 /* * */
+#define AMP 10 /* & */
+#define DOT 11 /* . selector*/
 
-#define DIAG 14 /* / */
-#define REM 15 /* % */
-#define ASSIG 16 /* = */
+#define DIAG 12 /* / */
+#define REM 13 /* % */
+#define ASSIG 14 /* = */
 
-#define EQ 17 /* == */
-#define NEQ 18 /* != */
-#define LEQ 19 /* <= */
-#define GEQ 20 /* >= */
-#define LE 21 /* < */
-#define GE 22 /* > */
+#define EQ 15 /* == */
+#define NEQ 16 /* != */
+#define LEQ 17 /* <= */
+#define GEQ 18 /* >= */
+#define LE 19 /* < */
+#define GE 20 /* > */
 
 /* Reserved words */
-#define IF 23
-#define ELSE 24
-#define BREAK 25
-#define SWITCH 26
-#define CASE 27
-#define DEFAULT 28
-#define CONTINUE 29
-#define VAR 30
-#define CONST 31
-#define DEFER 32
-#define PACKAGE 33
-#define FUNC 34
-#define RETURN 35
-#define STRUCT 36
-#define FOR 37
+#define IF 21
+#define ELSE 22
+#define BREAK 23
+#define SWITCH 24
+#define CASE 25
+#define DEFAULT 26
+#define CONTINUE 27
+#define VAR 28
+#define CONST 29
+#define DEFER 30
+#define PACKAGE 31
+#define FUNC 32
+#define RETURN 33
+#define STRUCT 34
+#define FOR 35
 
 /* Separators */
-#define LPAR 38 /* ( */
-#define RPAR 39 /* ) */
-#define LBRA 40 /* [ */
-#define RBRA 41 /* ] */
+#define LPAR 36 /* ( */
+#define RPAR 37 /* ) */
+#define LBRA 38 /* [ */
+#define RBRA 39 /* ] */
+#define LCURL 40 /* { */
+#define RCURL 41 /* } */
 #define SC 42 /* ; */
 #define COMMA 43 /* , */
 #define DDOT 44 /* : */

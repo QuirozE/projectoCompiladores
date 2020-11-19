@@ -9,6 +9,8 @@
 %x CADENA
 %x STRINGML
 
+espacio [ \t]
+
 int_type    (uint8|uint16|int8|int16|int32byte)
 float_type  (float32|float64|complex64)
 type        ({int_type}|{float_type}|byte|string|bool)
@@ -68,8 +70,6 @@ return    {fprintf(yyout, "#%d#", RETURN);}
 struct    {fprintf(yyout, "#%d#", STRUCT);}
 for       {fprintf(yyout, "#%d#", FOR);}
 
-"++"  {fprintf(yyout, "#%d#", INC);}
-"--"  {fprintf(yyout, "#%d#", DEC);}
 "+"   {fprintf(yyout, "#%d#", PLUS);}
 "-"   {fprintf(yyout, "#%d#", MINUS);}
 "!"   {fprintf(yyout, "#%d#", NEG);}
@@ -91,6 +91,8 @@ for       {fprintf(yyout, "#%d#", FOR);}
 ")" {fprintf(yyout, "#%d#", RPAR);}
 "[" {fprintf(yyout, "#%d#", LBRA);}
 "]" {fprintf(yyout, "#%d#", RBRA);}
+"{" {fprintf(yyout, "#%d#", LCURL);}
+"}" {fprintf(yyout, "#%d#", RCURL);}
 ";" {fprintf(yyout, "#%d#", SC);}
 ":" {fprintf(yyout, "#%d#", DDOT);}
 "," {fprintf(yyout, "#%d#", COMMA);}
@@ -102,7 +104,7 @@ for       {fprintf(yyout, "#%d#", FOR);}
 {complex} {fprintf(yyout, "#%d#", IM);}
 {id}      {fprintf(yyout, "#%d#", ID);}
 
-[ ]+ { fprintf(yyout, "%s", yytext); }
+{espacio}+ { fprintf(yyout, "%s", yytext); }
 . {
   printf("Error: %s Linea: %d\n", yytext, linea);
   yyterminate();
@@ -129,7 +131,7 @@ int main(int argc, char *argv[]) {
     puts("Se necestian dos archivos de entrada");
     return -1;
   }
-  if(check_ext(argv[1], "art")==-1) return -1;
+  if(check_ext(argv[1], "go")==-1) return -1;
   if(check_ext(argv[2], "tokens")==-1) return -1;
 
   yyin = fopen(argv[1], "r");
