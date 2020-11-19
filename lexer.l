@@ -7,6 +7,7 @@
 %option noyywrap
 
 %x CADENA
+%x STRINGML
 
 int_type    (uint8|uint16|int8|int16|int32byte)
 float_type  (float32|float64|complex64)
@@ -26,11 +27,14 @@ exp           ({digit}|{digit}\.{int}?|\.{int}){exp_end}
 float   ({exp}|{simple_float})
 complex ({int}|{float})i
 
-ml_string `[^`]*`
-
-espacio [ ]
-
 %%
+
+` {BEGIN(STRINGML);}
+<STRINGML>\n {linea++;}
+<STRINGML>` {
+  fprintf(yyout, "#%d#", STRING);
+  BEGIN(INITIAL);
+}
 
 \" {BEGIN(CADENA);}
 <CADENA>\" {
@@ -41,12 +45,12 @@ espacio [ ]
   printf("Error: Salto de linea no válido. Linea: %d\n", linea);
   yyterminate();
 }
-<CADENA><<EOF>> {
+<CADENA,STRINGML><<EOF>> {
   printf("Error: Cadena sin cerrar. Linea: %d\n", linea);
   yyterminate();
 }
 <CADENA>\\(.) {}
-<CADENA>. {}
+<STRINGML,CADENA>. {}
 
 if        {fprintf(yyout, "#%d#", IF);}
 else      {fprintf(yyout, "#%d#", ELSE);}
@@ -96,7 +100,6 @@ for       {fprintf(yyout, "#%d#", FOR);}
 {float}   {fprintf(yyout, "#%d#", FLOAT);}
 {int}     {fprintf(yyout, "#%d#", INT);}
 {complex} {fprintf(yyout, "#%d#", IM);}
-{ml_string}  {fprintf(yyout, "#%d#", STRING);}
 {id}      {fprintf(yyout, "#%d#", ID);}
 
 [ ]+ { fprintf(yyout, "%s", yytext); }
@@ -105,7 +108,7 @@ for       {fprintf(yyout, "#%d#", FOR);}
   yyterminate();
 }
 
-\n  {
+\n {
   linea++;
   fprintf(yyout, "\n");
 }
