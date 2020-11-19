@@ -4,7 +4,7 @@ Se implemente el lenguaje definido en el archivo `docs/2021-1Gramatica.pdf`.
 
 ## Análisis léxico
 
-La descripción de los requerimientos para la sección de análisis leico se puede encontrar en el archivo `docs/AnalisisLexico.pdf`.
+La descripción del diseño del analizador se puede encontrar en el archivo `docs/AnalisisLexico.pdf`.
 
 Lo único que vale la pena resaltar de la implementación son las clases léxicas usadas. Éstas están definidas en el archivo `classes.h`. Son las siguientes.
 
@@ -79,6 +79,8 @@ Lo único que vale la pena resaltar de la implementación son las clases léxica
     | --------------- | --- |
     | Todos los tipos | 45  |
 
+    Los tipos válidos son `uint8`, `uint16`, `int8`, `int16` y `int32` para enteros, `float32`, `float64` para flotantes, `complex64` para imaginarios, `byte`para bytes, `string` cadenas y `bool` para booleanos.
+
 ### Compilar
 
 Se requiere de [`flex`](https://github.com/westes/flex/) para generar el analizador, y de algún compilador de C, por ejemplo [`gcc`](https://gcc.gnu.org/), para compilar el código generado.
@@ -123,13 +125,13 @@ Y produce el siguiente archivo `out.tokens`
 
 ```console
 #31# #0#
-    #32# #0##36##0##43# #0# #0##37# #40#
-        #28# #0# #0#
+    #32# #0##36##0##43# #0# #45##37# #40#
+        #28# #45# #0#
         #0# #14# #1# #6##1##12##1#
         #0##36##1##43# #1##37#
         #33#
     #41#
-    #32# #0##36##0##43# #0# #0##37# #0# #40#
+    #32# #0##36##0##43# #0# #45##37# #45# #40#
         #33# #0# #6##0#
     #41#
 ```

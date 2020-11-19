@@ -11,7 +11,7 @@
 
 espacio [ \t]
 
-int_type    (uint8|uint16|int8|int16|int32byte)
+int_type    (uint8|uint16|int8|int16|int32)
 float_type  (float32|float64|complex64)
 type        ({int_type}|{float_type}|byte|string|bool)
 
